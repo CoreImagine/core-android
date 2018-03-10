@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Coreix See Again</string>
+    <string name="title_home">Connect</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_stream">Stream</string>
+    <string name="need_loc_access">Need Location Access</string>
+    <string name="please_grant_loc_access">Please Grant Location Access</string>
+</resources>
