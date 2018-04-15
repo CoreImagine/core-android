@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "977661133802",
+    "firebase_url": "https://optimistic-yew-199509.firebaseio.com",
+    "project_id": "optimistic-yew-199509",
+    "storage_bucket": "optimistic-yew-199509.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977661133802:android:ba27087171a962bb",
+        "android_client_info": {
+          "package_name": "com.coreix.coreix0404"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977661133802-kvei4ta5mcuml9pt4b2r0v2n1g7gvalu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.coreix.coreix0404",
+            "certificate_hash": "8ccb5537b599cb1c05fa9c21b5bb8e10e97c5fb2"
+          }
+        },
+        {
+          "client_id": "977661133802-m4qanh64hooigdat1ajuk4ncrgrb96vr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFXJOS6OIg9cMhdlOb0Hcpy5GlBD1jNNQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977661133802-m4qanh64hooigdat1ajuk4ncrgrb96vr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

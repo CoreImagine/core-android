@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Coreix0404</string>
+    <string name="singin">Sign In</string>
+    <string name="emailtxt">Enter Email Here</string>
+    <string name="passwd">Enter Password Here</string>
+    <string name="title_activity_list_online">ListOnline</string>
+    <string name="title_activity_map_tracking">Map</string>
+    <string name="google_play_service_missing">Google Play Service Missing</string>
+</resources>
