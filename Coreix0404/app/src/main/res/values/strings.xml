@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Coreix0404</string>
+    <string name="app_name">Coreix</string>
     <string name="singin">Sign In</string>
     <string name="emailtxt">Enter Email Here</string>
     <string name="passwd">Enter Password Here</string>
@@ -7,4 +7,9 @@
     <string name="title_activity_map_tracking">Map</string>
     <string name="email_hint">coreix@gmail.com</string>
     <string name="google_play_service_missing">Google Play Service Missing</string>
+    <string name="facebook_app_id">330168930736232</string>
+    <string name="fb_login_protocol_scheme">fb330168930736232</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

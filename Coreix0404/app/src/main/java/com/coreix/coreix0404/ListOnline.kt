@@ -55,8 +55,8 @@ class ListOnline : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     private lateinit var mFusedLocation : FusedLocationProviderClient
     private val MY_PERMISSION_REQUEST_CODE = 7171
     private val PLAY_SERVICES_REQUEST = 7172
-    private val UpdateInterval :Long = 5000
-    private val FastInterval :Long  = 3000
+    private val UpdateInterval :Long = 3000
+    private val FastInterval :Long  = 2000
     private val Distance :Float = 10f
 
     override fun onStart() {

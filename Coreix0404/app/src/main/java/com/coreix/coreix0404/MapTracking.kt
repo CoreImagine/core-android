@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ValueEventListener
-import java.lang.Math.sin
+import java.lang.Math.*
 import java.text.DecimalFormat
 
 
@@ -61,21 +61,22 @@ class MapTracking : AppCompatActivity(), OnMapReadyCallback {
                 for (postSnapshot : DataSnapshot in dataSnapshot!!.children){
                     val tracking : Tracking = postSnapshot.getValue(Tracking::class.java)!!
                     val latitude = tracking.getLatitude().toDouble()
-                    val longitude = tracking.getLatitude().toDouble()
-//                    if(latitude == null || longitude == null){
-//                        Log.e("[Load]", "What could possibility go wrong??")
-//                    }else{
-//                        Log.e("[Load]", "email" + tracking.getEmail() + " Lat "+ tracking.getLatitude()
-//                                + " Lng " + tracking.getLongitude())
-//                        Log.e("[Load]", "Gooooood")
+                    val longitude = tracking.getLongitude().toDouble()
+                    if(latitude == null || longitude == null){
+                        Log.e("[Load]", "What could possibility go wrong??")
+                    }else{
+                        Log.e("[Load]", "email :" + tracking.getEmail() +"\n"+ " Lat "+ tracking.getLatitude()
+                                + " Lng " + tracking.getLongitude())
+                        Log.e("[Load]", "Gooooood")
                         val freindLocation = LatLng(tracking.getLatitude().toDouble(),
                                 tracking.getLongitude().toDouble())
 
                         //creating location from user coordinates
                         val currentUser = Location("")
-                        currentUser.latitude  = latitude
-                        currentUser.longitude = longitude
-
+                        currentUser.latitude  = mlatitude
+                        currentUser.longitude = mlongitude
+                        Log.e("[Load]",  "My location:  Lat "+ currentUser.latitude
+                                + " Lng " + currentUser.longitude)
                         //creating location from friend location
                         val friend = Location("")
                         friend.longitude  = tracking.getLongitude().toDouble()
@@ -90,15 +91,15 @@ class MapTracking : AppCompatActivity(), OnMapReadyCallback {
                         mMap.addMarker(MarkerOptions()
                                 .position(freindLocation)
                                 .title(tracking!!.getEmail())
-                                .snippet("Distance " + DecimalFormat("#.#").format(distance(currentUser, friend))+ " km")
+                                .snippet("Distance " + DecimalFormat("#.#").format(distance(currentUser, friend))+ " m")
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude , longitude ), 12.0f))
-//                    }
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude , longitude ), 18.0f))
+                    }
                 }
                 //create marker for current user
                 val current = LatLng(mlatitude, mlongitude)
                 mMap.addMarker(MarkerOptions().position(current).title(FirebaseAuth.getInstance().currentUser!!.email))
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(mlatitude , mlongitude), 14.0f))
+//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(mlatitude , mlongitude), 18.0f))
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -108,26 +109,28 @@ class MapTracking : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun distance(currentUser: Location, friend: Location): Double {
-        val theta = currentUser.longitude - friend.longitude
-        var dist: Double? = (sin(deg2rad(currentUser.latitude))
-                * sin(deg2rad(friend.latitude))
-                * Math.cos(deg2rad(currentUser.latitude))
-                * Math.cos(deg2rad(friend.latitude))
-                * Math.cos(deg2rad(theta)))
-        dist = Math.acos(dist!!)
-        dist = rad2deg(dist)
-        dist *= 60.0 * 1.1515
+//        val theta = currentUser.longitude - friend.longitude
+//        var dist: Double? = (sin(deg2rad(currentUser.latitude))
+//                * sin(deg2rad(friend.latitude))
+//                * cos(deg2rad(currentUser.latitude))
+//                * cos(deg2rad(friend.latitude))
+//                * cos(deg2rad(theta)))
+//        dist = acos(dist!!)
+//        dist = rad2deg(dist)
+//        dist *= 60.0 * 1.1515
+        // method 2
+        var R = 6371e3 // metres
+        var phi1 = deg2rad(currentUser.latitude)
+        var phi2 = deg2rad(friend.latitude)
+        var delt_phi = deg2rad(friend.latitude - currentUser.latitude)
+        var delt_lam = deg2rad(friend.longitude - currentUser.longitude)
+
+        var a = sin(delt_phi/2) * sin(delt_phi/2) + cos(phi1) * cos(phi2) * sin(delt_lam/2) * sin(delt_lam/2)
+        var c = 2 * atan2(sqrt(a), sqrt(1-a))
+        var dist : Double = R * c
+        Log.e("[Distance]","The distance is " + dist.toString())
         return dist
     }
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     private fun rad2deg(rad: Double?): Double {
         return rad!! * 180.0 / Math.PI
     }
@@ -138,7 +141,6 @@ class MapTracking : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
 //        // Add a marker in Sydney and move the camera
 //        val sydney = LatLng(-34.0, 151.0)
 //        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
