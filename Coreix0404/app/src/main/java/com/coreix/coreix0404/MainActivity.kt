@@ -17,12 +17,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         btnLogin = findViewById(R.id.signinbtn)
-        btnLogin?.setOnClickListener(object :View.OnClickListener{
-            override fun onClick(view: View){
-                startActivityForResult(
-                        AuthUI.getInstance().createSignInIntentBuilder().setAllowNewEmailAccounts(true).build(),LOGIN_PERMISSION)
-            }
-        })
+        btnLogin?.setOnClickListener {
+            startActivityForResult(
+                    AuthUI.getInstance().createSignInIntentBuilder().setAllowNewEmailAccounts(true).build(),LOGIN_PERMISSION)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

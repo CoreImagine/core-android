@@ -1,5 +1,7 @@
 package com.coreix.coreix0404
 
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
@@ -8,18 +10,18 @@ import android.os.Looper
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.view.menu.MenuView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.Menu
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 
 import kotlinx.android.synthetic.main.activity_list_online.*
 import android.util.Log
-import android.view.MenuItem
+import android.view.*
 import android.widget.Toast
+import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
@@ -28,6 +30,7 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.user_layout.view.*
 import javax.security.auth.callback.Callback
 
 
@@ -59,6 +62,7 @@ class ListOnline : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     override fun onStart() {
         super.onStart()
 //        if(checkPlayServices()) mGoogleApiClient.connect()
+        adapter?.startListening()
         if(mGoogleApiClient != null) mGoogleApiClient.connect()
     }
 
@@ -259,7 +263,7 @@ class ListOnline : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         var mLocationCallback:LocationCallback = object :LocationCallback(){
             override fun onLocationResult(locationResult : LocationResult) {
                 // do work here
-                onLocationChanged(locationResult.getLastLocation());
+                onLocationChanged(locationResult.lastLocation)
             }
         }
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -272,13 +276,31 @@ class ListOnline : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     }
 
     private fun updateList(){
-        adapter = object : FirebaseRecyclerAdapter<User, ListOnlineViewHolder>(
-                User::class.java,R.layout.user_layout,ListOnlineViewHolder::class.java,counterRef){
-            override fun populateViewHolder(viewHolder: ListOnlineViewHolder?, model: User?, position: Int) {
-                viewHolder!!.txtEmail.text = model?.getEmail()
-
-                // item click implementation April 15th, 2018 start
-
+        var userOptions = FirebaseRecyclerOptions.Builder<User>()
+        adapter = object : FirebaseRecyclerAdapter<User, ListOnlineViewHolder>(userOptions
+                .setQuery(counterRef,User::class.java).build()){
+            override fun onBindViewHolder(holder: ListOnlineViewHolder, position: Int, model: User) {
+                if(model.getEmail().equals(FirebaseAuth.getInstance().currentUser!!.email)){
+                    holder.txtEmail.text = model.getEmail() + "(me)"
+                }else {
+                    holder.txtEmail.text = model.getEmail()
+                }
+                holder?.itemView.setOnClickListener{
+                    Toast.makeText(baseContext,itemCount.toString(),Toast.LENGTH_LONG).show()
+                    if(model.getEmail() != FirebaseAuth.getInstance().currentUser!!.email)
+                    {
+                        Toast.makeText(baseContext,model.getEmail()+" is on the map",Toast.LENGTH_LONG).show()
+                         val map = Intent(baseContext, MapTracking::class.java)
+                         map.putExtra("email",model.getEmail())
+                         map.putExtra("latitude",mLastLocation.latitude)
+                         map.putExtra("longitude",mLastLocation.longitude)
+                         startActivity(map)
+                    }
+                }
+            }
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListOnlineViewHolder {
+                return ListOnlineViewHolder(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.user_layout, parent, false))
             }
         }
         adapter!!.notifyDataSetChanged()
@@ -289,6 +311,7 @@ class ListOnline : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         if(mGoogleApiClient.isConnected) {
             mGoogleApiClient.disconnect()
         }
+        adapter?.stopListening()
         super.onStop()
     }
 

@@ -8,14 +8,20 @@ import android.widget.TextView
  * Created by user on 4/4/2018.
  */
 class ListOnlineViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-    private lateinit var mItemClickListener : ItemClickListener
+    var txtEmail: TextView
 
-    override fun onClick(v: View?) {
+    internal lateinit var itemClickListener: ItemClickListener
 
+    init {
+        txtEmail = itemView.findViewById<View>(R.id.txt_email) as TextView
+        itemView.setOnClickListener(this)
     }
 
+    fun setItemClickListener(itemClickListener: ItemClickListener) {
+        this.itemClickListener = itemClickListener
+    }
 
-    var txtEmail : TextView = itemView.findViewById(R.id.txt_email)
-
-
+    override fun onClick(view: View) {
+        itemClickListener.onClick(view, adapterPosition)
+    }
 }
